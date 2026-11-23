@@ -16,7 +16,7 @@ import io.jsonwebtoken.security.Keys;
 @Service("jwtService")
 public class JwtService {
 
-    private final SecretKey key; 
+    private final SecretKey key;
 
     public JwtService(@Value("${jwt.secret}") String secret) {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
@@ -41,10 +41,10 @@ public class JwtService {
 
         try {
 
-        Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token);
+            Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token);
 
         } catch (JwtException e) {
             return false;
@@ -53,6 +53,18 @@ public class JwtService {
         }
 
         return true;
+    }
+
+    public String getUsernameFromToken(String token) {
+
+        String usuario = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+
+        return usuario;
     }
 
 }
